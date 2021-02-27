@@ -26,13 +26,15 @@ class DB {
       content: ''
     })
 
+    const pageId = nanoid(8)
     const page = {
       title: pageTitle,
-      id: nanoid(8),
+      id: pageId,
       ...meta,
       children: [
         {
           id: blockId,
+          pageId,
           children: []
         },
       ],
