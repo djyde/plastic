@@ -46,7 +46,8 @@
 		const id = nanoid(8)
 		adapter.addBlock({
 			id,
-			content: ''
+			content: '',
+			pageId: root.id,
 		})
 		return {
 			id,
