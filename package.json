@@ -5,7 +5,9 @@
     "web": "vite"
   },
   "dependencies": {
-    "electron": "^11.3.0"
+    "dayjs": "^1.10.4",
+    "electron": "^11.3.0",
+    "electron-better-ipc": "^1.1.1"
   },
   "devDependencies": {
     "autoprefixer": "^10.2.4",

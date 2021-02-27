@@ -1,4 +1,6 @@
 const { app, BrowserWindow } = require("electron");
+const db = require('./db')
+db.init()
 
 function createWindow() {
   const win = new BrowserWindow({

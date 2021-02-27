@@ -1,20 +1,24 @@
 <script>
   import Page from './Page.svelte'
+  const { ipcRenderer } = global.require('electron-better-ipc')
 
+  let page = null
 
-  let page = {
-    id: 'foo',
-    title: 'Tutorial',
-    children: [
+  ;(async () => {
+    const note = await ipcRenderer.callMain('createDailyNote')
+    page = note
+  })();
 
-    ]
-  }
 </script>
 
 <div class="flex">
   <div class="flex-1">
     <div style="width: 960px;" class="mx-auto">
-      <Page page={page} />
+      {#if page}
+        <Page page={page} />
+      {:else}
+        <span>Loading...</span>
+      {/if}
     </div>
   </div>
 </div>
