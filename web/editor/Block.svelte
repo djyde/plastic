@@ -8,7 +8,7 @@
 	export let block
 	export let path
 	export let root
-	export let debugMode = true
+	export let debugMode = false
 	export let adapter
 	export let isRoot = false
 

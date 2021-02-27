@@ -1,7 +1,7 @@
 import Link from "../blocks/Link.svelte";
-import Todo from "../blocks/Todo.svelte";
-import Code from "../blocks/Code.svelte";
-import Bold from "../blocks/Bold.svelte";
+import Todo from "../blocks/builtin/Todo.svelte";
+import Code from "../blocks/builtin/Code.svelte";
+import Bold from "../blocks/builtin/Bold.svelte";
 
 const rules = [
   {

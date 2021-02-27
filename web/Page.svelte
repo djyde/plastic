@@ -2,7 +2,11 @@
   import Block from "./editor/Block.svelte";
   import dayjs from 'dayjs'
   import adapter from './adapter'
-  export let page;
+  import db from './db'
+
+  export let pageId;
+
+  let page = JSON.parse(JSON.stringify(db.getPageById(pageId)))
 
 </script>
 

@@ -38,7 +38,13 @@ class DB {
       ],
     };
 
-    return this.db.get('pages').push(page).write()
+    this.db.get('pages').push(page).write()
+
+    return page
+  }
+
+  getPageById(pageId) {
+    return this.db.get('pages').find({id: pageId}).value()
   }
 
   createBlock(block) {
@@ -73,6 +79,18 @@ class DB {
       return this.createPage(today, {
         type: 'daily'
       });
+    } else {
+      return existed
+    }
+  }
+
+  touchPageByTitle(title) {
+    const existed = this.db.get("pages").find({ title }).value();
+    console.log(existed)
+    if (!existed) {
+      return this.createPage(title, {
+        type: 'default'
+      })
     } else {
       return existed
     }
