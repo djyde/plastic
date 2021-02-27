@@ -9,7 +9,9 @@ function createWindow() {
     },
   });
 
-  win.loadFile("index.html");
+  if (process.env.NODE_ENV !== 'production') {
+    win.loadURL('http://localhost:3000');
+  }
 }
 
 app.whenReady().then(createWindow);
