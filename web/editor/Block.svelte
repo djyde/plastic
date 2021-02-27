@@ -8,8 +8,10 @@
 	export let block
 	export let path
 	export let root
-	export let debugMode = false
+	export let debugMode = true
 	export let adapter
+	export let isRoot = false
+
 	let previewWrapper
 	let focused = false
 	let editor
@@ -56,8 +58,7 @@
 		console.log('destroy', block.id)
 		unsub()
 	})
-	
-	$: isRoot = block.id === 'root'
+
 	$: hasChild  = block.children.length > 0
 	
 	async function onCreateChildEvent(e) {
@@ -76,7 +77,8 @@
 			await updateBlock()
 			$editingBlockId = node.id
 		} else {
-			block.children.splice(source, 1)
+			const origin = block.children.splice(source, 1)
+			adapter.deleteBlock(origin[0].id)
 			await updateBlock()
 			dispatch('createChild', {
 				at: path[path.length - 1] + 1,
@@ -87,6 +89,7 @@
 	async function onMoveAsChildEvent(e) {
 		const { at } = e.detail
 		const origin = block.children.splice(at, 1)
+		// adapter.deleteBlock(origin[0].id)
 		block.children[at - 1].children.push(origin[0])
 		await updateBlock()
 	}
@@ -96,7 +99,8 @@
 			// prevent
 		} else {
 			const at = e.detail.at
-			block.children.splice(at, 1)
+			const origin = block.children.splice(at, 1)
+			adapter.deleteBlock(origin[0].id)
 			updateBlock()
 			if (at === 0) {
 				// move cursor to parent

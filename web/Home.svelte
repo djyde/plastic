@@ -7,11 +7,9 @@
 
   (async () => {
     const note = db.createDailyNote();
-    console.log(note);
-    page = note;
+    page = JSON.parse(JSON.stringify(note));
   })();
 
-  
 </script>
 
 <div class="flex">
@@ -20,7 +18,7 @@
       {#if page}
         <Page {page} />
       {:else}
-        <span>Loading...</span>
+        <span></span>
       {/if}
     </div>
   </div>

@@ -54,7 +54,7 @@ class DB {
   }
 
   updateBlock(blockId, body) {
-    return this.db.get(`blocks.${block.id}`).assign(body).write()
+    return this.db.get(`blocks.${blockId}`).assign(body).write()
   }
 
   updatePage(pageId, children) {
@@ -76,6 +76,10 @@ class DB {
     } else {
       return existed
     }
+  }
+
+  deleteBlock(blockId) {
+    this.db.unset(`blocks.${blockId}`).write()
   }
 }
 
