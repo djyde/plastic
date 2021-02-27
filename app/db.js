@@ -16,23 +16,45 @@ class DB {
 
     this.db.defaults({
       pages: [],
+      blocks: {}
     }).write();
   }
 
   createPage(pageTitle, meta = {}) {
-    return this.db.get('pages').push({
+    const blockId = this.createBlock({
+      id: nanoid(8),
+      content: ''
+    })
+
+    const page = {
       title: pageTitle,
       id: nanoid(8),
       ...meta,
       children: [
         {
-          id: nanoid(8),
-          content: '',
+          id: blockId,
           children: []
-        }
-      ]
-    })
-    .write()
+        },
+      ],
+    };
+
+    return this.db.get('pages').push(page).write()
+  }
+
+  createBlock(block) {
+    this.db.set(`blocks.${block.id}`, block)
+      .write()
+
+    return block.id
+  }
+
+  getBlockById(blockId) {
+    // console.log(blockId, this.db.get(`blocks.${blockId}`).value());
+    return this.db.get(`blocks.${blockId}`).value()
+  }
+
+  updateBlock(blockId, body) {
+    return this.db.get(`blocks.${block.id}`).assign(body).write()
   }
 
   updatePage(pageId, children) {
@@ -58,13 +80,5 @@ class DB {
 }
 
 const db = new DB()
-
-ipc.answerRenderer('createDailyNote', async () => {
-  return db.createDailyNote()
-})
-
-ipc.answerRenderer("updatePage", async ({ pageId, children }) => {
-  return db.updatePage(pageId, children);
-});
 
 module.exports = db

@@ -1,13 +1,11 @@
 <script>
-  import Block from "plastic-editor";
+  import Block from "./editor/Block.svelte";
   import dayjs from 'dayjs'
-  const { ipcRenderer } = global.require('electron-better-ipc')
-
+  import adapter from './adapter'
   export let page;
 
   let block = {
     id: "root",
-    content: "",
     children: page.children.length ? page.children : [
       {
         id: `${Date.now()}`,
@@ -17,13 +15,6 @@
     ],
   };
 
-  async function onChangeBlock() {
-    await ipcRenderer.callMain('updatePage', {
-      pageId: page.id,
-      children: page.children
-    })
-    console.log('saved!')
-  }
 </script>
 
 <div class="px-8 pt-16 mb-8">
@@ -34,5 +25,5 @@
   />
 </div>
 <div class="px-8">
-  <Block dispatchChangeBlockToRoot={onChangeBlock} {block} root={block} path={[0]} />
+  <Block adapter={adapter} {block} root={block} path={[0]} />
 </div>
