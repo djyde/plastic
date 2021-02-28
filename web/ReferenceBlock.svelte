@@ -4,6 +4,7 @@
   import Block from "./editor/Block.svelte";
   import adapter from "./adapter";
   import dayjs from 'dayjs'
+import router from "./router";
 
   const db = DB.get()
   /**
@@ -31,7 +32,10 @@
 
 <div>
   <div class="mb-2 bg-blue-50 px-2 py-1 font-medium">
-    <a href={`/page/${block.page.id}`}>{block.page.type === 'daily' ? dayjs(block.page.title).format("MMMM, DD, YYYY") : block.page.title}</a>
+    <a on:click={e => {
+      e.preventDefault();
+      router.navigate(`/page/${block.page.id}`)
+    }} href={`/page/${block.page.id}`}>{block.page.type === 'daily' ? dayjs(block.page.title).format("MMMM, DD, YYYY") : block.page.title}</a>
   </div>
 
   <div>

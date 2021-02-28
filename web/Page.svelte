@@ -1,24 +1,30 @@
 <script>
-  import { getContext } from "svelte";
+  import { getContext, onMount } from "svelte";
   import ReferenceBlock from "./ReferenceBlock.svelte";
 
   import Block from "./editor/Block.svelte";
   import dayjs from "dayjs";
   import adapter from "./adapter";
-import DB from './db'
-const db = DB.get()
+  import DB from "./db";
+
+  const db = DB.get();
+  const { rules } = getContext("plastic");
 
   export let pageId;
 
   let references = [];
 
-  let page = JSON.parse(JSON.stringify(db.getPageById(pageId)));
+  let page
 
-  const { rules } = getContext("plastic");
+  $: {
 
-  (async () => {
-    references = db.findPageReferenceBlocks(pageId);
-  })();
+    page = JSON.parse(JSON.stringify(db.getPageById(pageId)));
+
+    (async () => {
+      references = db.findPageReferenceBlocks(pageId);
+    })();
+  }
+
 </script>
 
 <div class="px-8 pt-16 mb-8">

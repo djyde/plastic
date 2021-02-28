@@ -29,3 +29,11 @@ app.on("activate", () => {
     createWindow();
   }
 });
+
+
+app.on('open-file', (e, path) => {
+  e.preventDefault()
+  createWindow()
+})
+
+exports.createWindow

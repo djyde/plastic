@@ -723,6 +723,11 @@ nanoid@^3.1.20:
   resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.1.20.tgz#badc263c6b1dcf14b71efaa85f6ab4c1d6cfc788"
   integrity sha512-a1cQNyczgKbLX9jwbS/+d7W8fX/RfgYR7lVWwWOGIPNgK2m0MWvrGF6/m4kk6U3QcFMnZf3RIhL0v2Jgh/0Uxw==
 
+navigo@^8.9.0:
+  version "8.9.0"
+  resolved "https://registry.yarnpkg.com/navigo/-/navigo-8.9.0.tgz#1b40fa30509027379850865dc6ecdcec68a68fa8"
+  integrity sha512-bh6IH0D6iA5H3JCYvaAM8JeYO7QsDyhMGb8EIgG/cph70rJ11fveHUbl57QgcankZek/M9jeecQIJSC4J4RBRA==
+
 node-emoji@^1.8.1:
   version "1.10.0"
   resolved "https://registry.yarnpkg.com/node-emoji/-/node-emoji-1.10.0.tgz#8886abd25d9c7bb61802a658523d1f8d2a89b2da"

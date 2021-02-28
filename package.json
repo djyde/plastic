@@ -8,6 +8,7 @@
     "dayjs": "^1.10.4",
     "electron": "^11.3.0",
     "electron-better-ipc": "^1.1.1",
+    "navigo": "^8.9.0",
     "svelte-routing": "^1.5.0"
   },
   "devDependencies": {

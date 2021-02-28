@@ -1,46 +1,67 @@
 <script>
-  import { Router, Link, Route } from "svelte-routing";
   import DailyNotes from "./pages/DailyNotes.svelte";
   import OpenFile from "./pages/OpenFile.svelte";
-
   import Page from "./Page.svelte";
-  import { setContext } from "svelte";
-  import rules from './rules'
-  import DB from './db'
+  import { onDestroy, onMount, setContext } from "svelte";
+  import rules from "./rules";
+  import DB from "./db";
+  import router from "./router";
 
-  export let url;
+  let pageNow = {
+    component: OpenFile,
+    props: {},
+  };
 
-  setContext('plastic', {
-    rules
-  })
+  setContext("plastic", {
+    rules,
+  });
 
-  let db
-  if (db = DB.get()) {
-  } else {
-    url = "/openFile"
-  }
+  onDestroy(() => {
+    router.destroy();
+  });
+
+  router.on("/", () => {
+    if (DB.get()) {
+      router.navigate("/daily");
+    } else {
+      router.navigate("/openFile");
+    }
+  });
+
+  router.on("/page/:id", ({ data }) => {
+    pageNow = {
+      component: Page,
+      props: {
+        pageId: data.id,
+      },
+    };
+
+    console.log(pageNow)
+  });
+
+  router.on("/daily", () => {
+    pageNow = {
+      component: DailyNotes,
+      props: {},
+    };
+  });
+
+  router.on("/openFile", () => {
+    pageNow = {
+      component: OpenFile,
+      props: {},
+    };
+  });
+
+  router.navigate(router.getCurrentLocation().url);
+
 </script>
 
-<Router {url}>
-  <nav class="flex justify-center p-4">
-  </nav>
-  <div class="flex">
-    <div class="flex-1">
-      <div style="width: 960px;" class="mx-auto">
-
-        <Route path="page/:id" let:params>
-          <Page pageId={params.id} />
-        </Route>
-
-        <Route path="openFile">
-          <OpenFile />
-        </Route>
-
-        <Route path="/">
-          <DailyNotes />
-        </Route>
-
-      </div>
+<nav class="flex justify-center p-4" />
+<div class="flex">
+  <div class="flex-1">
+    <div style="width: 960px;" class="mx-auto">
+      <svelte:component this={pageNow.component} {...pageNow.props} />
     </div>
   </div>
-</Router>
+</div>

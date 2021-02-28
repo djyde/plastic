@@ -1,15 +1,16 @@
 <script>
   import DB from "../db";
-  import { navigate } from "svelte-routing";
+  import router from "../router";
 
   async function openFile() {
-    
+    await DB.open(false)
+    router.navigate('/')
   }
 
   async function createNewPlasticDirectory() {
-    const db = await DB.open()
+    const db = await DB.open(true)
     // console.log('navigate')
-    // navigate('/', { replace: true })
+    router.navigate('/')
   }
 </script>
 
