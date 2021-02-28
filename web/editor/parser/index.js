@@ -1,9 +1,8 @@
-import Link from "../blocks/Link.svelte";
 import Todo from "../blocks/builtin/Todo.svelte";
 import Code from "../blocks/builtin/Code.svelte";
 import Bold from "../blocks/builtin/Bold.svelte";
 
-const rules = [
+const builtinRules = [
   {
     match: /\`([^\`]*)\`/,
     processor(matched, position) {
@@ -56,21 +55,13 @@ const rules = [
       };
     },
   },
-  {
-    match: /\[\[([^\]]*)\]\]/,
-    processor(matched, position) {
-      return {
-        type: "LINK",
-        component: Link,
-        value: matched[1],
-        matched,
-        position,
-      };
-    },
-  },
+
 ];
 
-export function tokenizer(str, matches = rules) {
+export function tokenizer(str, rules) {
+
+  let matches = builtinRules.concat(rules)
+
   let position = 0;
   let toMatch = str;
   let tokens = [];

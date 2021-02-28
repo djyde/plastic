@@ -2,8 +2,13 @@
   import { Router, Link, Route } from "svelte-routing";
   import DailyNotes from "./pages/DailyNotes.svelte";
   import Page from "./Page.svelte";
-
+  import { setContext } from "svelte";
+  import rules from './rules'
   let url = "";
+
+  setContext('plastic', {
+    rules
+  })
 </script>
 
 <Router {url}>

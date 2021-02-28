@@ -10,7 +10,9 @@
 	export let root
 	export let debugMode = false
 	export let adapter
+	export let editable = true
 	export let isRoot = false
+	export let rules = []
 
 	let previewWrapper
 	let focused = false
@@ -21,7 +23,7 @@
 
 	blockBody = adapter.getBlock(block.id)
 
-	async function updateBlock(pageChanged = true) {
+	async function updateBlockStructure(pageChanged = true) {
 		block = block
 		await tick()
 		if (pageChanged) {
@@ -66,7 +68,7 @@
 		const at = e.detail.at
 		const node = e.detail.node || makeBlock()
 		block.children.splice(at, 0, node)
-		await updateBlock()
+		await updateBlockStructure()
 		$editingBlockId = node.id
 	}
 
@@ -75,12 +77,12 @@
 		if (isRoot) {
 			const node = makeBlock()
 			block.children.splice(source + 1, 0, node)
-			await updateBlock()
+			await updateBlockStructure()
 			$editingBlockId = node.id
 		} else {
 			const origin = block.children.splice(source, 1)
 			adapter.deleteBlock(origin[0].id)
-			await updateBlock()
+			await updateBlockStructure()
 			dispatch('createChild', {
 				at: path[path.length - 1] + 1,
 			})
@@ -92,7 +94,7 @@
 		const origin = block.children.splice(at, 1)
 		// adapter.deleteBlock(origin[0].id)
 		block.children[at - 1].children.push(origin[0])
-		await updateBlock()
+		await updateBlockStructure()
 	}
 	
 	async function onRemoveChildEvent(e) {
@@ -102,7 +104,7 @@
 			const at = e.detail.at
 			const origin = block.children.splice(at, 1)
 			adapter.deleteBlock(origin[0].id)
-			updateBlock()
+			updateBlockStructure()
 			if (at === 0) {
 				// move cursor to parent
 				$editingBlockId = block.id
@@ -114,13 +116,15 @@
 	}
 
 	async function onClickPreview(e) {
-		$editingBlockId = block.id
+		if (editable) {
+			$editingBlockId = block.id
+		}
 	}
 
 	async function selfCreateChild(at) {
 		const newBlock = makeBlock()
 		block.children.splice(at, 0, newBlock)
-		await updateBlock()
+		await updateBlockStructure()
 		$editingBlockId = newBlock.id
 	}
 	
@@ -209,7 +213,7 @@
 				<textarea use:clickOutside={onClickOutside} on:keydown={onKeyDown} spellcheck="false" bind:this={editor} class="editor" use:autoResize on:change={onChangeContent}>{blockBody.content}</textarea>
 				{:else}
 					<div bind:this={previewWrapper} class="preview"  on:click|stopPropagation={onClickPreview}>
-						<RichText updateContent={updateContent} content={blockBody.content} />
+						<RichText rules={rules} updateContent={updateContent} blockBody={blockBody} />
 					</div>
 				{/if}
 			{/if}
@@ -226,6 +230,8 @@
 		<div class="flex-1">
 			{#each block.children as child, index (child.id)}
 			<svelte:self
+				editable={editable}
+				rules={rules}
 				on:backward={onBackwardEvent}
 				on:moveAsChild={onMoveAsChildEvent}
 				on:createChild={onCreateChildEvent} 
