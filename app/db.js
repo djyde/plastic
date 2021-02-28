@@ -79,6 +79,8 @@ class DB {
       .defaults({
         pages: [],
         blocks: {},
+        stars: [],
+        main: null
       })
       .write();
 
@@ -214,6 +216,28 @@ class DB {
   searchPageByKeyword(keyword) {
     const reg = new RegExp(`${keyword}`, 'i')
     return this.db.get('pages').filter(page => page.title.match(reg)).take(10).value()
+  }
+
+  getStaredPages() {
+    return this.db.get('stars').map(id => this.getPageById(id)).value()
+  }
+
+  starPage(pageId) {
+    this.db.get('stars').push(pageId).write()
+  }
+
+  unstarPage(pageId) {
+    this.db.set(
+      "stars",
+      this.db
+        .get("stars")
+        .filter((_) => _ !== pageId)
+        .value()
+    ).write();
+  }
+
+  isStared(pageId) {
+    return this.db.get('stars').indexOf(pageId).value() !== -1
   }
 }
 

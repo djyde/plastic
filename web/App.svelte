@@ -21,12 +21,12 @@
   });
 
   function updateTitle() {
-    document.title = `Plastic - ${DB.get().directory}`;
+    // document.title = `Plastic - ${DB.get().directory}`;
   }
 
   router.on("/", () => {
-    updateTitle();
     if (DB.get()) {
+      updateTitle();
       router.navigate("/daily");
     } else {
       router.navigate("/openFile");
