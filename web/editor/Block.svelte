@@ -133,7 +133,7 @@
 			content: e.target.value
 		})
 		// block.content = e.target.value
-		updateBlock(false)
+		// updateBlock(false)
 	}
 
 	function updateContent(content) {
@@ -141,7 +141,7 @@
 			content
 		})
 		// block.content = content
-		updateBlock(false)
+		// updateBlock(false)
 	}
 
 	function onKeyDown(e){
