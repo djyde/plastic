@@ -17,7 +17,7 @@ const db = DB.get()
 
   const replace = (item) => (newValue) => {
     const range = [item.position, item.position + item.matched[0].length];
-    updateContent(replaceRange(content, range[0], range[1], newValue))
+    updateContent(replaceRange(blockBody.content, range[0], range[1], newValue))
   };
 
   const focusTextHelper = (item) => (offset = 0) => e => {

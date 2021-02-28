@@ -149,7 +149,7 @@
 	}
 
 	function onKeyDown(e){
-		switch (e.code) {
+		switch (e.key) {
 			case 'Enter':
 				if (!e.shiftKey) {
 					e.preventDefault()
@@ -195,6 +195,30 @@
 					dispatch('moveAsChild', {
 						at: path[path.length - 1]
 					})
+				}
+				break
+			case '[':
+				{
+					const [ start, end ] = [editor.selectionStart, editor.selectionEnd]
+					if (start === end) {
+						editor.setRangeText(']', start, end)
+					} else {
+						editor.setSelectionRange(start, start)
+						// editor.setRangeText('[', start, start)
+						editor.setRangeText(']', end, end)
+
+						setTimeout(() => {
+							editor.setSelectionRange(start + 1, end + 1)
+						})
+					}
+				}
+				break
+			case '{':
+				{
+					const [ start, end ] = [editor.selectionStart, editor.selectionEnd]
+					if (start === end) {
+						editor.setRangeText('}', start, end)
+					}
 				}
 				break
 		}

@@ -4,7 +4,7 @@ const db = DB.get();
 
 export default [
   {
-    match: /\[\[([^\]]*)\]\]/,
+    match: /\[\[([^\]]+)\]\]/,
     processor(matched, position) {
       return {
         type: "LINK",
