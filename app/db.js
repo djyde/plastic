@@ -209,6 +209,12 @@ class DB {
 
     return map;
   }
+
+    
+  searchPageByKeyword(keyword) {
+    const reg = new RegExp(`${keyword}`, 'i')
+    return this.db.get('pages').filter(page => page.title.match(reg)).take(10).value()
+  }
 }
 
 module.exports = DB;

@@ -20,16 +20,21 @@
     router.destroy();
   });
 
+  function updateTitle() {
+    document.title = `Plastic - ${DB.get().directory}`;
+  }
+
   router.on("/", () => {
+    updateTitle();
     if (DB.get()) {
       router.navigate("/daily");
-      document.title = `Plastic - ${DB.get().directory}`
     } else {
       router.navigate("/openFile");
     }
   });
 
   router.on("/page/:id", ({ data }) => {
+    updateTitle();
     pageNow = {
       component: Page,
       props: {
@@ -39,6 +44,7 @@
   });
 
   router.on("/daily", () => {
+    updateTitle();
     pageNow = {
       component: DailyNotes,
       props: {},
@@ -46,6 +52,7 @@
   });
 
   router.on("/openFile", () => {
+    updateTitle();
     pageNow = {
       component: OpenFile,
       props: {},
@@ -53,14 +60,10 @@
   });
 
   router.navigate(router.getCurrentLocation().url);
-
 </script>
 
-<nav class="flex justify-center p-4" />
 <div class="flex">
   <div class="flex-1">
-    <div style="width: 960px;" class="mx-auto">
-      <svelte:component this={pageNow.component} {...pageNow.props} />
-    </div>
+    <svelte:component this={pageNow.component} {...pageNow.props} />
   </div>
 </div>

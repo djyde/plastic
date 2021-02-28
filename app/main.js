@@ -4,8 +4,10 @@ const DB = require('./db')
 
 function createWindow() {
   const win = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 1280,
+    height: 1280 * 0.6,
+    minWidth: 1280,
+    minHeight: 1280 * 0.6,
     webPreferences: {
       nodeIntegration: true,
       enableRemoteModule: true,
