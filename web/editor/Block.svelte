@@ -158,11 +158,17 @@
 					if (isRoot) {
 						block.children.unshift(makeBlock())
 					} else if (hasChild) {
-						selfCreateChild(0)
+						if (editor.selectionStart === 0) {
+							dispatch('createChild', {
+								at: path[path.length - 1]
+							})
+						} else {
+							selfCreateChild(0)
+						}
 					} else {
 						if (editor.value) {
 							dispatch('createChild', {
-								at: path[path.length - 1] + 1
+								at: editor.selectionStart === 0 ? path[path.length - 1] : path[path.length - 1] + 1
 							})
 						} else {
 							dispatch('backward', {
@@ -196,7 +202,7 @@
 </script>
 
 {#if !isRoot}
-<div class="main flex">
+<div class="main flex mb-2">
 	<div class="pl-4 pr-2" style="margin-top: 10px;">
 		<div class=" bg-gray-900 rounded-full" style="width: 5px; height: 5px;"></div>
 	</div>
