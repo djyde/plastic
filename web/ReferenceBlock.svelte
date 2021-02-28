@@ -1,9 +1,11 @@
 <script>
   import { getContext } from "svelte";
-  import db from "./db";
+  import DB from "./db";
   import Block from "./editor/Block.svelte";
   import adapter from "./adapter";
   import dayjs from 'dayjs'
+
+  const db = DB.get()
   /**
    * content: string
    * id: string

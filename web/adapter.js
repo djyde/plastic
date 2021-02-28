@@ -1,4 +1,5 @@
-import db from './db'
+import DB from './db'
+const db = DB.get()
 
 const adapter = {
   addBlock(block) {

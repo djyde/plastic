@@ -1,4 +1,5 @@
 {
+  "name": "Plastic",
   "main": "main.js",
   "dependencies": {
     "dayjs": "^1.10.4",

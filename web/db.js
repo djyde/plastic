@@ -1,6 +1,10 @@
 const remote = global.require("electron").remote;
 
-const db = remote.require('./db')
+const DB = remote.require('./db')
 
-
-export default db;
+export default {
+  get() {
+    return DB.get(remote.getCurrentWindow().id)
+  },
+  open: DB.open
+}

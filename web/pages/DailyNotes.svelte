@@ -1,6 +1,7 @@
 <script>
   import Page from "../Page.svelte";
-  import db from "../db";
+  import DB from "../db";
+  const db = DB.get();
 
   let page = null;
 

@@ -1,5 +1,6 @@
 import Link from './blocks/Link.svelte'
-import db from './db'
+import DB from "./db";
+const db = DB.get();
 
 export default [
   {

@@ -5,7 +5,8 @@
   import Block from "./editor/Block.svelte";
   import dayjs from "dayjs";
   import adapter from "./adapter";
-  import db from "./db";
+import DB from './db'
+const db = DB.get()
 
   export let pageId;
 
@@ -38,7 +39,9 @@
 
   <div>
     {#each references as blockBody (blockBody.id)}
-      <ReferenceBlock {blockBody} />
+      <div class="my-1">
+        <ReferenceBlock {blockBody} />
+      </div>
       <!-- {#if blocksMap[blockBody.id]}
     <div>
       <a href={`/page/${blockBody.pageId}`}>{blockBody.pageId}</a>

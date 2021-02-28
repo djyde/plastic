@@ -1,7 +1,8 @@
 <script>
   import { anchorOffset } from './store'
   import { tokenizer } from "./parser";
-  import db from '../db'
+import DB from '../db'
+const db = DB.get()
   export let blockBody
   export let updateContent;
   export let rules = []

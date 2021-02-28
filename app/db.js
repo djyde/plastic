@@ -1,16 +1,64 @@
 const low = require("lowdb");
 const FileSync = require("lowdb/adapters/FileSync");
 const { nanoid } = require("nanoid");
-const { ipcMain: ipc } = require("electron-better-ipc");
+const { dialog, BrowserWindow, app } = require("electron");
 const dayjs = require("dayjs");
+const fs = require("fs");
+const path = require("path");
 
+function checkIsValidPlasticDirectory(directoryPath) {
+  try {
+    fs.accessSync(
+      path.resolve(directoryPath, "./plastic.json"),
+      fs.constants.F_OK
+    );
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
 class DB {
   db;
 
-  init() {
-    const dbFilePath = "db.json";
+  directory
 
-    const adapter = new FileSync(dbFilePath);
+  static instances = {};
+
+  static get(windowId = BrowserWindow.getFocusedWindow().id) {
+    return DB.instances[windowId]
+  }
+
+  static async open(createIfNotExists = false) {
+    const result = await dialog.showOpenDialog({
+      title: "Open Plastic",
+      properties: ["openDirectory", "createDirectory"],
+    });
+
+    if (result.filePaths.length) {
+      const directory = result.filePaths[0];
+      const isValid = checkIsValidPlasticDirectory(directory);
+
+      if (!isValid && !createIfNotExists) {
+        throw new Error("Not a valid plastic notebook");
+      }
+
+      const windowId = BrowserWindow.getFocusedWindow().id
+
+      if (!DB.instances[windowId]) {
+        console.log('new db instance for window', windowId)
+        DB.instances[windowId] = new DB(directory);
+      }
+
+      return DB.instances[windowId];
+    }
+  }
+
+  hasInit() {
+    return !!this.db;
+  }
+
+  constructor(directory) {
+    const adapter = new FileSync(path.resolve(directory, "./plastic.json"));
     this.db = low(adapter);
 
     this.db
@@ -19,6 +67,10 @@ class DB {
         blocks: {},
       })
       .write();
+
+    this.directory = directory;
+
+    app.addRecentDocument(directory);
   }
 
   createPage(pageTitle, meta = {}) {
@@ -106,11 +158,15 @@ class DB {
   }
 
   findPageReferenceBlocks(pageId) {
-    return this.db.get('blocks').pickBy(_ => _.references && _.references.includes(pageId)).values().value()
+    return this.db
+      .get("blocks")
+      .pickBy((_) => _.references && _.references.includes(pageId))
+      .values()
+      .value();
   }
 
   traversalPage(pageId, cb) {
-    const page = this.db.get('pages').find({ id: pageId }).value()
+    const page = this.db.get("pages").find({ id: pageId }).value();
 
     function traversal(node, index = 0, pos = []) {
       const currentPos = pos.concat(index);
@@ -122,23 +178,23 @@ class DB {
       }
     }
 
-    page.children.forEach((block, index) => { traversal(block, index, [0]) })
+    page.children.forEach((block, index) => {
+      traversal(block, index, [0]);
+    });
   }
 
   getFlatBlocksFromPage(pageId) {
-    let map = {}
+    let map = {};
     this.traversalPage(pageId, (block, position, page) => {
       map[block.id] = {
         position,
         block,
-        page
-      }
-    })
+        page,
+      };
+    });
 
-    return map
+    return map;
   }
 }
 
-const db = new DB();
-
-module.exports = db;
+module.exports = DB;
