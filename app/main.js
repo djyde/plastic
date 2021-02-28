@@ -1,5 +1,6 @@
 const { app, BrowserWindow } = require("electron");
 // require('./menu')
+const DB = require('./db')
 
 function createWindow() {
   const win = new BrowserWindow({
@@ -7,13 +8,15 @@ function createWindow() {
     height: 600,
     webPreferences: {
       nodeIntegration: true,
-      enableRemoteModule: true
+      enableRemoteModule: true,
     },
   });
 
-  if (process.env.NODE_ENV !== 'production') {
-    win.loadURL('http://localhost:3000');
+  if (process.env.NODE_ENV !== "production") {
+    win.loadURL("http://localhost:3000");
   }
+
+  return win;
 }
 
 app.whenReady().then(createWindow);
@@ -30,10 +33,11 @@ app.on("activate", () => {
   }
 });
 
+app.on("open-file", (e, path) => {
+  e.preventDefault();
+  const win = createWindow();
+  win.setRepresentedFilename(path);
+  DB.openDirectoryOnWindow(path, win.id)
+});
 
-app.on('open-file', (e, path) => {
-  e.preventDefault()
-  createWindow()
-})
-
-exports.createWindow
+exports.createWindow;

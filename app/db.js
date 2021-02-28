@@ -28,6 +28,20 @@ class DB {
     return DB.instances[windowId]
   }
 
+  static openDirectoryOnWindow(directoryPath, windowId = BrowserWindow.getFocusedWindow())  {
+    const isValid = checkIsValidPlasticDirectory(directoryPath);
+
+    if (!isValid) {
+      throw new Error("Not a valid plastic notebook");
+    }
+
+    if (!DB.instances[windowId]) {
+      DB.instances[windowId] = new DB(directoryPath);
+    }
+
+    return DB.instances[windowId];
+  }
+
   static async open(createIfNotExists = false) {
     const result = await dialog.showOpenDialog({
       title: "Open Plastic",

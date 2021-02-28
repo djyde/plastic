@@ -23,6 +23,7 @@
   router.on("/", () => {
     if (DB.get()) {
       router.navigate("/daily");
+      document.title = `Plastic - ${DB.get().directory}`
     } else {
       router.navigate("/openFile");
     }
@@ -35,8 +36,6 @@
         pageId: data.id,
       },
     };
-
-    console.log(pageNow)
   });
 
   router.on("/daily", () => {

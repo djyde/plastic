@@ -45,7 +45,7 @@
 
   <div>
     {#each references as blockBody (blockBody.id)}
-      <div class="my-1">
+      <div class="my-4">
         <ReferenceBlock {blockBody} />
       </div>
       <!-- {#if blocksMap[blockBody.id]}
