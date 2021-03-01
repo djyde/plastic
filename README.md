@@ -2,6 +2,8 @@
 
 A block-based bi-directional note app
 
+![](https://assets.djyde.com/uPic/nA94Ev.png?x-oss-process=style/high-optimize)
+
 # Build
 
 
@@ -22,3 +24,7 @@ cd app && yarn
 cd ..
 yarn dist
 ```
+
+# License
+
+GPL v3
