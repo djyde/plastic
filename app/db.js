@@ -28,7 +28,7 @@ class DB {
     return DB.instances[windowId]
   }
 
-  static openDirectoryOnWindow(directoryPath, windowId = BrowserWindow.getFocusedWindow())  {
+  static openDirectoryOnWindow(directoryPath, windowId = BrowserWindow.getFocusedWindow().id)  {
     const isValid = checkIsValidPlasticDirectory(directoryPath);
 
     if (!isValid) {

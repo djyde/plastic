@@ -10,7 +10,6 @@
   import DB from "./db";
   import RouteLink from "./components/RouteLink.svelte";
 
-  const db = DB.get();
   const { rules } = getContext("plastic");
 
   export let pageId;
@@ -22,26 +21,26 @@
   let isStared;
 
   $: {
-    page = JSON.parse(JSON.stringify(db.getPageById(pageId)));
+    page = JSON.parse(JSON.stringify(DB.get().getPageById(pageId)));
 
     (async () => {
-      references = db.findPageReferenceBlocks(pageId);
-      isStared = db.isStared(pageId);
+      references = DB.get().findPageReferenceBlocks(pageId);
+      isStared = DB.get().isStared(pageId);
     })();
   }
 
-  let staredPages = db.getStaredPages();
+  let staredPages = DB.get().getStaredPages();
 
   function star() {
     console.log('star', pageId)
-    db.starPage(pageId);
-    isStared = db.isStared(pageId);
+    DB.get().starPage(pageId);
+    isStared = DB.get().isStared(pageId);
   }
 
   function unstar() {
-    db.unstarPage(pageId);
+    DB.get().unstarPage(pageId);
     console.log('unstar', pageId)
-    isStared = db.isStared(pageId);
+    isStared = DB.get().isStared(pageId);
   }
 </script>
 

@@ -1,6 +1,8 @@
 const { app, BrowserWindow } = require("electron");
 // require('./menu')
 const DB = require('./db')
+const isDev = require("electron-is-dev");
+const path = require("path")
 
 function createWindow() {
   const win = new BrowserWindow({
@@ -14,8 +16,10 @@ function createWindow() {
     },
   });
 
-  if (process.env.NODE_ENV !== "production") {
+  if (isDev) {
     win.loadURL("http://localhost:3000");
+  } else {
+    win.loadFile(path.resolve(__dirname, './dist/index.html'))
   }
 
   return win;

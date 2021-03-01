@@ -1,22 +1,21 @@
 import DB from './db'
-const db = DB.get()
 
 const adapter = {
   addBlock(block) {
-    db.createBlock(block)
+    DB.get().createBlock(block)
   },
   getBlock(blockId) {
-    return db.getBlockById(blockId);
+    return DB.get().getBlockById(blockId);
   },
   updateBlock(blockId, body) {
-    db.updateBlock(blockId, body)
+    DB.get().updateBlock(blockId, body)
   },
   deleteBlock(blockId) {
-    db.deleteBlock(blockId)
+    DB.get().deleteBlock(blockId)
   },
   onPageChanged(page) {
     console.log(page)
-    db.updatePage(page.id, page.children)
+    DB.get().updatePage(page.id, page.children)
   },
 };
 

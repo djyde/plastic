@@ -6,7 +6,6 @@
   import dayjs from 'dayjs'
 import router from "./router";
 
-  const db = DB.get()
   /**
    * content: string
    * id: string
@@ -24,7 +23,7 @@ import router from "./router";
    */
   let block;
   (() => {
-    const blocksMap = db.getFlatBlocksFromPage(blockBody.pageId);
+    const blocksMap = DB.get().getFlatBlocksFromPage(blockBody.pageId);
 
     block = JSON.parse(JSON.stringify(blocksMap[blockBody.id]));
   })();

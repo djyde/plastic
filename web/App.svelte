@@ -59,7 +59,7 @@
     };
   });
 
-  router.navigate(router.getCurrentLocation().url);
+  router.navigate(router.getCurrentLocation().hashString);
 </script>
 
 <div class="flex">

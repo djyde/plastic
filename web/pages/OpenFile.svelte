@@ -4,6 +4,7 @@
 
   async function openFile() {
     await DB.open(false)
+    console.log(DB.get())
     router.navigate('/')
   }
 

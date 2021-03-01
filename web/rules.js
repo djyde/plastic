@@ -1,6 +1,5 @@
 import Link from './blocks/Link.svelte'
 import DB from "./db";
-const db = DB.get();
 
 export default [
   {
@@ -10,7 +9,7 @@ export default [
         type: "LINK",
         component: Link,
         value: matched[1],
-        page: db.touchPageByTitle(matched[1]),
+        page: DB.get().touchPageByTitle(matched[1]),
         matched,
         position,
       };
