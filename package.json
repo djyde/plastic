@@ -3,9 +3,8 @@
   "scripts": {
     "start": "electron app",
     "web": "vite",
-    "build": "vite build",
-    "pack": "npm run build && electron-builder --dir --mac",
-    "dist": "npm run build && electron-builder --mac"
+    "build:web": "vite build",
+    "build": "npm run build:web && electron-builder"
   },
   "build": {
     "appId": "lu.taonan.plastic",
