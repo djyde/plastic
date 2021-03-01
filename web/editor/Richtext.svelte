@@ -1,10 +1,10 @@
 <script lang="ts">
   import { anchorOffset } from './store'
   import { tokenizer } from "./parser";
-  import type { Rule, Token } from './parser'
+  import type { Rule, Token, Block } from './parser'
   import DB from '../db'
   const db = DB.get()
-  export let blockBody
+  export let blockBody: Block
   export let updateContent;
   export let rules: Rule[] = []
 
@@ -27,7 +27,7 @@
   }
 
   // collect block reference pages
-  db.setBlockPageReferences(blockBody.id, tokens.filter(_ => _.type === 'LINK').map(_ => _.meta.page.id))
+  db.setBlockPageReferences(blockBody.id, tokens.filter(_ => _.type === 'LINK' || _.type === 'TAG').map(_ => _.meta.page.id))
 </script>
 
 <div>
