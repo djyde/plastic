@@ -1,7 +1,7 @@
 <script lang="ts">
   import { anchorOffset } from './store'
   import { tokenizer } from "./parser";
-  import type { Rule } from './parser'
+  import type { Rule, Token } from './parser'
   import DB from '../db'
   const db = DB.get()
   export let blockBody
@@ -12,16 +12,16 @@
 
   const tokens = tokenizer(toMatch, rules);
 
-  function replaceRange(s, start, end, substitute) {
+  function replaceRange(s: string, start: number, end: number, substitute: string) {
     return s.substring(0, start) + substitute + s.substring(end);
   }
 
-  const replace = (item) => (newValue) => {
+  const replace = (item: Token) => (newValue: string) => {
     const range = [item.position, item.position + item.matched[0].length];
     updateContent(replaceRange(blockBody.content, range[0], range[1], newValue))
   };
 
-  const focusTextHelper = (item) => (offset = 0) => e => {
+  const focusTextHelper = (item: Token) => (offset = 0) => e => {
     const selection = window.getSelection();
     $anchorOffset = selection.anchorOffset + item.position + offset
   }
@@ -35,7 +35,7 @@
     {#if item.type === 'TEXT'}
       <span on:click|capture={focusTextHelper(item)()}>{item.value}</span>
     {:else}
-      <svelte:component blockBody={blockBody} focusTextHelper={focusTextHelper(item)} this={item.meta.component} {...item.meta.props} replace={replace(item)} item={item} />
+      <svelte:component blockBody={blockBody} focusTextHelper={focusTextHelper(item)} this={item.meta?.component} {...item.meta?.props} replace={replace(item)} item={item} />
     {/if}
   {/each}
   <!-- <span>block</span> {content} -->

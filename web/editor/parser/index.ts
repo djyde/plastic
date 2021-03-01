@@ -66,8 +66,8 @@ const builtinRules = [
 export type Token = {
   type: string;
   position: number;
-  matched: any;
-  meta: any;
+  matched: RegExpMatchArray;
+  meta?: any;
   value: string
 };
 

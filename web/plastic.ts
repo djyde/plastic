@@ -5,7 +5,7 @@ import type { MarkOptional } from 'ts-essentials'
 export type Page = {
   id: string,
   title: string,
-  type?: string,
+  type?: 'daily' | 'default',
   children: ShallowBlock[]
 }
 
@@ -20,6 +20,13 @@ export type Block = {
   content: string,
   pageId: string,
   references: Array<Page['id']>
+}
+
+export type Database = {
+  usedBy: number,
+  pages: Page,
+  blocks: Block,
+  stars: string[]
 }
 
 export interface PlasticAdapter {
