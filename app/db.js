@@ -98,11 +98,7 @@ class DB {
       ...meta,
       children: [
         {
-          id: this.createBlock({
-            id: nanoid(8),
-            content: "",
-            pageId,
-          }),
+          id: this.createBlock('', pageId),
           children: [],
         },
       ],
@@ -117,10 +113,17 @@ class DB {
     return this.db.get("pages").find({ id: pageId }).value();
   }
 
-  createBlock(block) {
-    this.db.set(`blocks.${block.id}`, block).write();
+  createBlock(content, pageId) {
+    const id = nanoid(8)
+    this.db
+      .set(`blocks.${id}`, {
+        id,
+        content,
+        pageId,
+      })
+      .write();
 
-    return block.id;
+    return id;
   }
 
   getBlockById(blockId) {

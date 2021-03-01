@@ -8,7 +8,9 @@ const builtinRules = [
     processor(matched, position) {
       return {
         type: "CODE",
-        component: Code,
+        meta: {
+          component: Code,
+        },
         position,
         value: matched[1],
         matched,
@@ -20,7 +22,9 @@ const builtinRules = [
     processor(matched, position) {
       return {
         type: "BOLD",
-        component: Bold,
+        meta: {
+          component: Bold,
+        },
         value: matched[1],
         position,
         matched,
@@ -32,9 +36,11 @@ const builtinRules = [
     processor(matched, position) {
       return {
         type: "TODO",
-        component: Todo,
-        props: {
-          checked: false,
+        meta: {
+          component: Todo,
+          props: {
+            checked: false,
+          },
         },
         position,
         matched,
@@ -55,26 +61,39 @@ const builtinRules = [
       };
     },
   },
+] as Rule[];
 
-];
+export type Token = {
+  type: string;
+  position: number;
+  matched: any;
+  meta: any;
+  value: string
+};
 
-export function tokenizer(str, rules) {
+export type Rule = {
+  match: RegExp;
+  processor(matched: RegExpMatchArray, position: number): Token;
+};
 
-  let matches = builtinRules.concat(rules)
+
+export function tokenizer(str: string, rules: Rule[]) {
+  let matches = builtinRules.concat(rules);
 
   let position = 0;
   let toMatch = str;
-  let tokens = [];
+  let tokens = [] as Token[];
 
-  let text = null;
+  let text: string | null = null;
 
   whileLoop: while (toMatch.length > 0) {
-    let matched;
+    let matched: RegExpMatchArray;
     for (const rule of matches) {
       if ((matched = toMatch.match(new RegExp(`^${rule.match.source}`)))) {
         toMatch = toMatch.slice(matched[0].length);
         // clear plain
         if (text !== null) {
+          // @ts-expect-error
           tokens.push({
             type: "TEXT",
             value: text,
@@ -97,6 +116,7 @@ export function tokenizer(str, rules) {
   }
 
   if (text !== null) {
+    // @ts-expect-error
     tokens.push({
       type: "TEXT",
       value: text,

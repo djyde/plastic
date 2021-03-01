@@ -1,29 +1,28 @@
 <script lang="ts">
-  import { getContext, onMount } from "svelte";
   import ReferenceBlock from "./ReferenceBlock.svelte";
 
   import Block from "./editor/Block.svelte";
   import dayjs from "dayjs";
-  import adapter from "./adapter";
   import PageSearchInput from "./components/PageSearchInput.svelte";
 
   import DB from "./db";
   import RouteLink from "./components/RouteLink.svelte";
-
-  const { rules } = getContext("plastic");
+  import rules from './rules'
+  import type { Page } from "./plastic";
 
   export let pageId: string;
 
-  let references = [];
+  let references: Block[] = []
 
-  let page;
+  let page: Page;
 
   let isStared: boolean;
 
   $: {
-    page = JSON.parse(JSON.stringify(DB.get().getPageById(pageId)));
+    page = JSON.parse(JSON.stringify(DB.get().getPageById(pageId))) as Page;
 
     (async () => {
+      // @ts-expect-error
       references = DB.get().findPageReferenceBlocks(pageId);
       isStared = DB.get().isStared(pageId);
     })();
@@ -95,7 +94,6 @@
           <Block
             {rules}
             isRoot={true}
-            {adapter}
             block={page}
             root={page}
             path={[0]}

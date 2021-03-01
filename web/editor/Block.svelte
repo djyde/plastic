@@ -1,33 +1,35 @@
-<script>
+<script lang="ts">
 	import { editingBlockId, anchorOffset, onChangeBlock } from './store'
 	import { clickOutside, autoResize } from './directives'
-	import RichText from './Richtext.svelte'
-	import { nanoid } from 'nanoid'
-	import { tick, createEventDispatcher, onDestroy, getContext, afterUpdate, beforeUpdate, onMount } from 'svelte'
+	import RichText from './RichText.svelte'
+	import { tick, createEventDispatcher, onDestroy } from 'svelte'
+	import type { Rule } from './parser';
+	import bridge from '../bridge'
+import type { Block, Page, ShallowBlock } from '../plastic';
 
-	export let block
-	export let path
-	export let root
+	export let block: Page | ShallowBlock
+	export let path: number[]
+	export let root: Page | ShallowBlock
 	export let debugMode = false
-	export let adapter
 	export let editable = true
 	export let isRoot = false
-	export let rules = []
+	export let rules: Rule[] = []
 
-	let previewWrapper
+	let previewWrapper: HTMLDivElement | null
 	let focused = false
-	let editor
-	let blockBody = null
+	let editor: HTMLTextAreaElement | null
+	let blockBody: null | Block = null
 	
 	const dispatch = createEventDispatcher()
 
-	blockBody = adapter.getBlock(block.id)
+	blockBody = bridge.getBlock(block.id)
 
 	async function updateBlockStructure(pageChanged = true) {
 		block = block
 		await tick()
 		if (pageChanged) {
-			adapter.onPageChanged(root)
+			// @ts-expect-error
+			bridge.onPageChanged(root)
 		}
 	}
 
@@ -44,13 +46,8 @@
 		}
 	})
 
-	function makeBlock () {
-		const id = nanoid(8)
-		adapter.addBlock({
-			id,
-			content: '',
-			pageId: root.id,
-		})
+	function makeBlock (): ShallowBlock {
+		const id = bridge.addBlock('', root.id)
 		return {
 			id,
 			children: []
@@ -58,7 +55,6 @@
 	}
 	
 	onDestroy(() => {
-		console.log('destroy', block.id)
 		unsub()
 	})
 
@@ -81,7 +77,7 @@
 			$editingBlockId = node.id
 		} else {
 			const origin = block.children.splice(source, 1)
-			adapter.deleteBlock(origin[0].id)
+			bridge.deleteBlock(origin[0].id)
 			await updateBlockStructure()
 			dispatch('createChild', {
 				at: path[path.length - 1] + 1,
@@ -92,7 +88,7 @@
 	async function onMoveAsChildEvent(e) {
 		const { at } = e.detail
 		const origin = block.children.splice(at, 1)
-		// adapter.deleteBlock(origin[0].id)
+		// bridge.deleteBlock(origin[0].id)
 		block.children[at - 1].children.push(origin[0])
 		await updateBlockStructure()
 	}
@@ -103,7 +99,7 @@
 		} else {
 			const at = e.detail.at
 			const origin = block.children.splice(at, 1)
-			adapter.deleteBlock(origin[0].id)
+			bridge.deleteBlock(origin[0].id)
 			updateBlockStructure()
 			if (at === 0) {
 				// move cursor to parent
@@ -133,7 +129,7 @@
 	}
 	
 	function onChangeContent(e) {
-		adapter.updateBlock(block.id, {
+		bridge.updateBlock(block.id, {
 			content: e.target.value
 		})
 		// block.content = e.target.value
@@ -141,7 +137,7 @@
 	}
 
 	function updateContent(content) {
-		adapter.updateBlock(block.id, {
+		bridge.updateBlock(block.id, {
 			content
 		})
 		// block.content = content
@@ -240,7 +236,7 @@
 			{/if}
 			{#if blockBody}
 				{#if focused}
-				<textarea use:clickOutside={onClickOutside} on:keydown={onKeyDown} spellcheck="false" bind:this={editor} class="editor" use:autoResize on:change={onChangeContent}>{blockBody.content}</textarea>
+				<textarea use:clickOutside={onClickOutside} on:keydown={onKeyDown} spellcheck={false} bind:this={editor} class="editor" use:autoResize on:change={onChangeContent}>{blockBody.content}</textarea>
 				{:else}
 					<div bind:this={previewWrapper} class="preview"  on:click|stopPropagation={onClickPreview}>
 						<RichText rules={rules} updateContent={updateContent} blockBody={blockBody} />
@@ -266,7 +262,6 @@
 				on:moveAsChild={onMoveAsChildEvent}
 				on:createChild={onCreateChildEvent} 
 				on:removeChild={onRemoveChildEvent}
-				adapter={adapter}
 				block={child} path={path.concat(index)} root={root} />
 		{/each}
 		</div>

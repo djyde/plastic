@@ -1,11 +1,12 @@
-<script>
+<script lang="ts">
   import { anchorOffset } from './store'
   import { tokenizer } from "./parser";
-import DB from '../db'
-const db = DB.get()
+  import type { Rule } from './parser'
+  import DB from '../db'
+  const db = DB.get()
   export let blockBody
   export let updateContent;
-  export let rules = []
+  export let rules: Rule[] = []
 
   let toMatch = `${blockBody.content}`;
 
@@ -26,7 +27,7 @@ const db = DB.get()
   }
 
   // collect block reference pages
-  db.setBlockPageReferences(blockBody.id, tokens.filter(_ => _.type === 'LINK').map(_ => _.page.id))
+  db.setBlockPageReferences(blockBody.id, tokens.filter(_ => _.type === 'LINK').map(_ => _.meta.page.id))
 </script>
 
 <div>
@@ -34,7 +35,7 @@ const db = DB.get()
     {#if item.type === 'TEXT'}
       <span on:click|capture={focusTextHelper(item)()}>{item.value}</span>
     {:else}
-      <svelte:component blockBody={blockBody} focusTextHelper={focusTextHelper(item)} this={item.component} {...item.props} replace={replace(item)} item={item} />
+      <svelte:component blockBody={blockBody} focusTextHelper={focusTextHelper(item)} this={item.meta.component} {...item.meta.props} replace={replace(item)} item={item} />
     {/if}
   {/each}
   <!-- <span>block</span> {content} -->

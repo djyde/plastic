@@ -1,5 +1,5 @@
-<script>
-  export let checked
+<script lang="ts">
+  export let checked: boolean
   export let replace
 
   function onClickCheckbox() {

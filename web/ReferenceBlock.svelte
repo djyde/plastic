@@ -1,10 +1,9 @@
-<script>
-  import { getContext } from "svelte";
+<script lang="ts">
   import DB from "./db";
   import Block from "./editor/Block.svelte";
-  import adapter from "./adapter";
-  import dayjs from 'dayjs'
-import router from "./router";
+  import dayjs from "dayjs";
+  import router from "./router";
+  import rules from "./rules";
 
   /**
    * content: string
@@ -12,9 +11,7 @@ import router from "./router";
    * pageId: string
    * references: string[]
    */
-  export let blockBody;
-
-  const { rules } = getContext("plastic");
+  export let blockBody: Block;
 
   /**
    * block: block item in page
@@ -31,17 +28,22 @@ import router from "./router";
 
 <div>
   <div class="mb-2 bg-blue-50 px-2 py-1 font-medium">
-    <a on:click={e => {
-      e.preventDefault();
-      router.navigate(`/page/${block.page.id}`)
-    }} href={`/page/${block.page.id}`}>{block.page.type === 'daily' ? dayjs(block.page.title).format("MMMM, DD, YYYY") : block.page.title}</a>
+    <a
+      on:click={(e) => {
+        e.preventDefault();
+        router.navigate(`/page/${block.page.id}`);
+      }}
+      href={`/page/${block.page.id}`}
+      >{block.page.type === "daily"
+        ? dayjs(block.page.title).format("MMMM, DD, YYYY")
+        : block.page.title}</a
+    >
   </div>
 
   <div>
     <Block
-      editable={false}
       {rules}
-      {adapter}
+      editable={false}
       block={block.block}
       root={block.page}
       path={block.position}

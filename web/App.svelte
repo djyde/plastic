@@ -3,7 +3,6 @@
   import OpenFile from "./pages/OpenFile.svelte";
   import Page from "./Page.svelte";
   import { onDestroy, onMount, setContext } from "svelte";
-  import rules from "./rules";
   import DB from "./db";
   import router from "./router";
 
@@ -11,10 +10,6 @@
     component: OpenFile,
     props: {},
   };
-
-  setContext("plastic", {
-    rules,
-  });
 
   onDestroy(() => {
     router.destroy();
