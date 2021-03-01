@@ -1,3 +1,4 @@
+// @ts-expect-error
 const remote = global.require("electron").remote;
 
 const DB = remote.require('./db')

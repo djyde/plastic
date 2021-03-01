@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import { getContext, onMount } from "svelte";
   import ReferenceBlock from "./ReferenceBlock.svelte";
 
@@ -12,13 +12,13 @@
 
   const { rules } = getContext("plastic");
 
-  export let pageId;
+  export let pageId: string;
 
   let references = [];
 
   let page;
 
-  let isStared;
+  let isStared: boolean;
 
   $: {
     page = JSON.parse(JSON.stringify(DB.get().getPageById(pageId)));
@@ -32,14 +32,12 @@
   let staredPages = DB.get().getStaredPages();
 
   function star() {
-    console.log('star', pageId)
     DB.get().starPage(pageId);
     isStared = DB.get().isStared(pageId);
   }
 
   function unstar() {
     DB.get().unstarPage(pageId);
-    console.log('unstar', pageId)
     isStared = DB.get().isStared(pageId);
   }
 </script>
