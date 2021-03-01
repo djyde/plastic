@@ -4,7 +4,7 @@
     "start": "electron app",
     "web": "vite",
     "build:web": "vite build",
-    "build": "npm run build:web && electron-builder"
+    "build": "npm run build:web && electron-builder --mac --win"
   },
   "build": {
     "appId": "lu.taonan.plastic",
