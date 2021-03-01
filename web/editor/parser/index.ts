@@ -1,6 +1,7 @@
 import Todo from "../blocks/builtin/Todo.svelte";
 import Code from "../blocks/builtin/Code.svelte";
 import Bold from "../blocks/builtin/Bold.svelte";
+import ExternalLink from "../blocks/builtin/ExternalLink.svelte";
 
 const builtinRules = [
   {
@@ -52,14 +53,33 @@ const builtinRules = [
     processor(matched, position) {
       return {
         type: "DONE",
-        component: Todo,
-        props: {
-          checked: true,
+        meta: {
+          component: Todo,
+          props: {
+            checked: true,
+          },
         },
         position,
         matched,
       };
     },
+  },
+  {
+    match: /\[([^\]]+)\]\(([^\)]+)\)/,
+    processor(matched, position) {
+      return {
+        type: "ExternalLink",
+        meta: {
+          component: ExternalLink,
+          props: {
+            title: matched[1],
+            url: matched[2],
+          },
+        },
+        position,
+        matched,
+      };
+    }
   },
 ] as Rule[];
 
