@@ -1,3 +1,20 @@
+import getCaretCoordinates from 'textarea-caret'
+
+export function caret(el: HTMLTextAreaElement, cb) {
+  const handler = function () {
+    var caret = getCaretCoordinates(this, this.selectionEnd);
+    cb(caret)
+  };
+
+  el.addEventListener('input', handler)
+
+  return {
+    destroy() {
+      el.removeEventListener('input', handler)
+    }
+  }
+}
+
 export function clickOutside(el, cb) {
   function handler(e) {
     if (e.target !== el) {

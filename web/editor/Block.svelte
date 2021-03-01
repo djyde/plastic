@@ -5,7 +5,12 @@
 	import { tick, createEventDispatcher, onDestroy } from 'svelte'
 	import type { Rule } from './parser';
 	import bridge from '../bridge'
-import type { Block, Page, ShallowBlock } from '../plastic';
+	import type { Block, Page, ShallowBlock } from '../plastic';
+	import { isInBracket } from './utils';
+	import getCaretCoordinates from 'textarea-caret'
+
+	// TODO: side effect, should remove
+	import DB from '../db'
 
 	export let block: Page | ShallowBlock
 	export let path: number[]
@@ -19,10 +24,25 @@ import type { Block, Page, ShallowBlock } from '../plastic';
 	let focused = false
 	let editor: HTMLTextAreaElement | null
 	let blockBody: null | Block = null
+	let searchResults: Page[] = []
+
+	let currentEditingLinkRange: number[] | null = null
+
+	let textareaCaret: null | { top: number, height: number, left: number } = null 
 	
 	const dispatch = createEventDispatcher()
 
 	blockBody = bridge.getBlock(block.id)
+
+	const onSelectPageOnSuggestion = (page: Page) => (e) => {
+		e.preventDefault()
+		if (editor && currentEditingLinkRange) {
+			editor.setRangeText(page.title, currentEditingLinkRange[0] , currentEditingLinkRange[1])
+			updateContent(editor.value)
+			currentEditingLinkRange = null
+			textareaCaret = null
+		}
+	}
 
 	async function updateBlockStructure(pageChanged = true) {
 		block = block
@@ -126,6 +146,7 @@ import type { Block, Page, ShallowBlock } from '../plastic';
 	
 	function onClickOutside(from = 'unknown') {
 		$editingBlockId = null
+		textareaCaret = null
 	}
 	
 	function onChangeContent(e) {
@@ -145,6 +166,27 @@ import type { Block, Page, ShallowBlock } from '../plastic';
 	}
 
 	function onKeyDown(e){
+		setTimeout(() => {
+			if (editor) {
+				const { selectionStart, selectionEnd } = editor
+				const ranges = isInBracket(editor.value, selectionStart)
+				if (ranges) {
+					// search page
+					const [ start, end ] = ranges
+					currentEditingLinkRange = ranges
+					const keyword = editor.value.slice(start, end)
+					const results = DB.get().searchPageByKeyword(keyword)
+					const caret = getCaretCoordinates(editor, start)
+					if (!textareaCaret) {
+						textareaCaret = caret
+					}
+					searchResults = results
+				} else {
+					textareaCaret = null
+				}
+			}
+		})
+
 		switch (e.key) {
 			case 'Enter':
 				if (!e.shiftKey) {
@@ -236,7 +278,16 @@ import type { Block, Page, ShallowBlock } from '../plastic';
 			{/if}
 			{#if blockBody}
 				{#if focused}
-				<textarea use:clickOutside={onClickOutside} on:keydown={onKeyDown} spellcheck={false} bind:this={editor} class="editor" use:autoResize on:change={onChangeContent}>{blockBody.content}</textarea>
+				<div class="relative">
+					{#if textareaCaret}
+					<div class="z-10 bg-white absolute w-64 border border-gray-100 overflow-scroll" style={`height: 200px; top: ${textareaCaret.top + 24}px; left: ${textareaCaret.left}px;`}>
+						{#each searchResults as result (result.id)}
+							<a on:click|stopPropagation={onSelectPageOnSuggestion(result)} class="block hover:bg-gray-100 px-2 py-2 text-sm" href={`/`}>{result.title}</a>
+						{/each}
+					</div>
+					{/if}
+					<textarea use:clickOutside={onClickOutside} on:keydown={onKeyDown} spellcheck={false} bind:this={editor} class="editor" use:autoResize on:change={onChangeContent}>{blockBody.content}</textarea>
+				</div>
 				{:else}
 					<div bind:this={previewWrapper} class="preview"  on:click|stopPropagation={onClickPreview}>
 						<RichText rules={rules} updateContent={updateContent} blockBody={blockBody} />
