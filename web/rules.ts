@@ -21,22 +21,41 @@ export default [
     },
   },
   {
+    match: /#\[\[([^\]]+)\]\]/,
+    processor(matched, position) {
+      const page = DB.get().touchPageByTitle(matched[1]);
+      return {
+        type: "TAG",
+        meta: {
+          page,
+          component: Tag,
+          props: {
+            page,
+          },
+        },
+        value: matched[1],
+        matched,
+        position,
+      };
+    },
+  },
+  {
     match: /#([^ ]+)/,
     processor(matched, position) {
-      const page = DB.get().touchPageByTitle(matched[1])
-       return {
-         type: "TAG",
-         meta: {
-           page,
-           component: Tag,
-           props: {
-             page,
-           },
-         },
-         value: matched[1],
-         matched,
-         position,
-       };
-    }
-  }
+      const page = DB.get().touchPageByTitle(matched[1]);
+      return {
+        type: "TAG",
+        meta: {
+          page,
+          component: Tag,
+          props: {
+            page,
+          },
+        },
+        value: matched[1],
+        matched,
+        position,
+      };
+    },
+  },
 ] as Rule[];
